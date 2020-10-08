@@ -30,6 +30,7 @@ open class DatePickerDialog: UIView {
     open var datePicker: UIDatePicker!
     private var cancelButton: UIButton!
     private var doneButton: UIButton!
+    private var view: UIView!
 
     // MARK: - Variables
     private var defaultDate: Date?
@@ -43,7 +44,7 @@ open class DatePickerDialog: UIView {
     private var font: UIFont!
 
     // MARK: - Dialog initialization
-    public init(textColor: UIColor = UIColor.black, buttonColor: UIColor = UIColor.blue, font: UIFont = .boldSystemFont(ofSize: 15), locale: Locale? = nil, showCancelButton: Bool = true) {
+    public init(textColor: UIColor = UIColor.black, buttonColor: UIColor = UIColor.blue, font: UIFont = .boldSystemFont(ofSize: 15), locale: Locale? = nil, showCancelButton: Bool = true, view: UIView) {
         let size = UIScreen.main.bounds.size
         super.init(frame: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         self.textColor = textColor
@@ -51,6 +52,7 @@ open class DatePickerDialog: UIView {
         self.font = font
         self.showCancelButton = showCancelButton
         self.locale = locale
+        self.view = view
         setupView()
     }
 
@@ -105,10 +107,12 @@ open class DatePickerDialog: UIView {
         
         /* Add dialog to main window */
         guard let appDelegate = UIApplication.shared.delegate else { fatalError() }
-        guard let window = appDelegate.window else { fatalError() }
-        window?.addSubview(self)
-        window?.bringSubviewToFront(self)
-        window?.endEditing(true)
+//        guard let window = appDelegate.window else { fatalError() }
+        
+        guard let window = self.view.window?.windowScene?.delegate else { fatalError() }
+        self.view.addSubview(self)
+        self.view.bringSubviewToFront(self)
+        self.view.endEditing(true)
         
         NotificationCenter.default.addObserver(self, selector: .deviceOrientationDidChange, name: UIDevice.orientationDidChangeNotification, object: nil)
         
